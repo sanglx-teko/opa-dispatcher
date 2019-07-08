@@ -1,0 +1,15 @@
+{
+  "Service": [
+    {
+      "Name": "service_name_1",
+      "ServiceGroup": "service_group_1"
+    },
+    {
+      "Name": "service_name_2",
+      "ServiceGroup": "service_group_2"
+    }
+  ],
+  "ETCD": {
+    "Endpoints": ["localhost:2379"]
+  }
+}
