@@ -21,14 +21,14 @@ func HandleDecisionAPIController(c echo.Context) (erro error) {
 	}()
 	u := new(model.DecisionRequest)
 	if err := c.Bind(u); err != nil {
-		erro = echo.ErrBadRequest
+		response.SetAllowed(false)
 		return
 	}
 	// service: "iam"
 	serviceConfig := ConfigurationManager.GetServiceConfig()
 	val, ok := serviceConfig[u.Service]
 	if !ok {
-		erro = echo.ErrBadRequest
+		response.SetAllowed(false)
 		return
 	}
 
@@ -40,12 +40,12 @@ func HandleDecisionAPIController(c echo.Context) (erro error) {
 		Input: u,
 	})
 	if err != nil {
-		erro = echo.ErrBadRequest
+		response.SetAllowed(false)
 		return
 	}
 	resp, err := http.Post(val.URL, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
-		erro = echo.ErrInternalServerError
+		response.SetAllowed(false)
 		return
 	}
 
@@ -53,7 +53,7 @@ func HandleDecisionAPIController(c echo.Context) (erro error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		erro = echo.ErrInternalServerError
+		response.SetAllowed(false)
 		return
 	}
 	type OPAResp struct {
