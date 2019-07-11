@@ -61,7 +61,7 @@ func HandleDecisionAPIController(c echo.Context) (erro error) {
 	}
 	var temp *OPAResp
 	if err := json.Unmarshal(body, &temp); err != nil {
-		erro = echo.ErrBadRequest
+		response.SetAllowed(false)
 		return
 	}
 	response.SetAllowed(temp.Result)
