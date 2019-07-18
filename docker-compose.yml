@@ -1,0 +1,30 @@
+version: '2'
+services:
+  opa-dispatcher:
+    ports:
+      - 1323:1323
+    build: .
+    depends_on:
+      - etcd
+    restart: always
+    environment:
+      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+    command: opa-dispatcher
+  etcd:
+    image: quay.io/coreos/etcd:v3.2.5
+    restart: always
+    ports:
+      - 2379:2379
+      - 2380:2380
+    environment:
+      ETCD_DATA_DIR: /etcd-data/data.etcd
+      ETCDCTL_API: 3
+      # ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      # ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      # ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+  # db:
+  #   image: mysql:5.7
+  #   restart: always
+  #   ports:
+  #     - 3306:3306
+  #   enviroments:

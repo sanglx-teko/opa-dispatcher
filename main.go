@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -9,7 +10,7 @@ import (
 
 	"github.com/sanglx-teko/opa-dispatcher/config"
 	"github.com/sanglx-teko/opa-dispatcher/controller/decision"
-	manager "github.com/sanglx-teko/opa-dispatcher/cores/configurationmanager"
+	"github.com/sanglx-teko/opa-dispatcher/cores/configurationmanager"
 )
 
 func changeWorkingDir() (currentDir string, err error) {
@@ -32,6 +33,12 @@ func loadConfigurationAndDB(currentDir string) error {
 	return nil
 }
 
+func hello(c echo.Context) error {
+	return c.JSON(http.StatusOK, map[string]string{
+		"Hello": "World",
+	})
+}
+
 func initRouter() {
 	e := echo.New()
 	e.Use(middleware.Logger())
@@ -43,7 +50,7 @@ func initRouter() {
 	// Secure middleware provides protection against cross-site scripting (XSS) attack, content type sniffing, clickjacking, insecure connection and other code injection attacks.
 	// For more example, please refer to https://echo.labstack.com/
 	e.Use(middleware.Secure())
-
+	e.GET("/", hello)
 	e.POST("/decision/handler", decision.HandleDecisionAPIController)
 	e.Logger.Fatal(e.Start(":1323"))
 }
@@ -58,8 +65,8 @@ func main() {
 		panic(err)
 	}
 
-	manager.Instance.InitWithConfig(config.GetConfigurations().ETCD)
-	decision.InitCFManager(manager.Instance)
+	configurationmanager.Instance.InitWithConfig(config.GetConfigurations().ETCD)
+	decision.InitCFManager(configurationmanager.Instance)
 
 	initRouter()
 }
