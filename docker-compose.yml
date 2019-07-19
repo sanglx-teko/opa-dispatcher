@@ -8,20 +8,33 @@ services:
       - etcd
     restart: always
     environment:
-      ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
-    command: opa-dispatcher
+      ETCD_URL: http://etcd:2379
+    command: ./opa-dispatcher
   etcd:
-    image: quay.io/coreos/etcd:v3.2.5
+    image: quay.io/coreos/etcd
     restart: always
     ports:
       - 2379:2379
-      - 2380:2380
+      # - 2380:2380
     environment:
-      ETCD_DATA_DIR: /etcd-data/data.etcd
       ETCDCTL_API: 3
-      # ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
-      # ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
-      # ETCD_ADVERTISE_CLIENT_URLS: http://etcd:2379
+    volumes:
+      - etcd:/etcd_data
+    command:
+      - /usr/local/bin/etcd
+      - -name
+      - etcd
+      - --data-dir=/etcd_data
+      - -advertise-client-urls
+      - http://etcd:2379
+      - -listen-client-urls
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls
+      - http://etcd:2380
+      - -listen-peer-urls
+      - http://0.0.0.0:2380
+volumes:
+  etcd:
   # db:
   #   image: mysql:5.7
   #   restart: always

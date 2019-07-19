@@ -15,6 +15,20 @@ func GetConfigurations() *Configuration {
 	return globalConfig
 }
 
+// LoadConfiguration ...
+func LoadConfiguration() error {
+	etcdURL := os.Getenv("ETCD_URL")
+	etcdURLs := []string{etcdURL}
+	configure := Configuration{}
+	if etcdURL != "" {
+		configure.ETCD = etcdClient.Config{
+			Endpoints: etcdURLs,
+		}
+	}
+	globalConfig = &configure
+	return nil
+}
+
 // LoadConfigurations load configurations from json file
 func LoadConfigurations(jsonFilePath string) error {
 	// Try to open file config

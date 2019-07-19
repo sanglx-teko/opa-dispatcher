@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
+	_ "github.com/joho/godotenv/autoload"
 	"github.com/sanglx-teko/opa-dispatcher/config"
 	"github.com/sanglx-teko/opa-dispatcher/controller/decision"
 	"github.com/sanglx-teko/opa-dispatcher/cores/configurationmanager"
@@ -26,9 +27,12 @@ func changeWorkingDir() (currentDir string, err error) {
 // loadConfigurationAndDB load configuration and setup Redis, DB, RPC, etc
 func loadConfigurationAndDB(currentDir string) error {
 	// Load configurations
-	if err := config.LoadConfigurations("configs.json"); err != nil {
+	if err := config.LoadConfiguration(); err != nil {
 		return err
 	}
+	// if err := config.LoadConfigurations("configs.json"); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }
