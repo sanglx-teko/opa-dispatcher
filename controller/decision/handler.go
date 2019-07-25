@@ -24,9 +24,11 @@ func HandleDecisionAPIController(c echo.Context) (erro error) {
 		response.SetAllowed(false)
 		return
 	}
+
 	// service: "iam"
 	serviceConfig := ConfigurationManager.GetServiceConfig()
 	val, ok := serviceConfig[u.Service]
+
 	if !ok {
 		response.SetAllowed(false)
 		return
@@ -36,13 +38,10 @@ func HandleDecisionAPIController(c echo.Context) (erro error) {
 		Input *model.DecisionRequest `json:"input"`
 	}
 
-	requestBody, err := json.Marshal(&tempStruct{
+	requestBody,_ := json.Marshal(&tempStruct{
 		Input: u,
 	})
-	if err != nil {
-		response.SetAllowed(false)
-		return
-	}
+
 	resp, err := http.Post(val.URL, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		response.SetAllowed(false)

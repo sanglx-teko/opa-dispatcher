@@ -1,9 +1,9 @@
 package config
 
 import (
-	"os"
-
 	"encoding/json"
+	"fmt"
+	"os"
 
 	etcdClient "github.com/coreos/etcd/clientv3"
 )
@@ -18,6 +18,10 @@ func GetConfigurations() *Configuration {
 // LoadConfiguration ...
 func LoadConfiguration() error {
 	etcdURL := os.Getenv("ETCD_URL")
+	if etcdURL == "" {
+		etcdURL = "http://localhost:2379"
+	}
+	fmt.Println("ETCD_URL:", etcdURL)
 	etcdURLs := []string{etcdURL}
 	configure := Configuration{}
 	if etcdURL != "" {
